@@ -6,6 +6,7 @@ const facultyItems = [
   { label: 'Dashboard', to: '/faculty/dashboard', icon: BarChart3 },
   { label: 'GATE Score Entry', to: '/faculty/gate', icon: BookOpenCheck },
   { label: 'NPTEL Approval', to: '/faculty/nptel-approval', icon: FileText },
+  { label: 'Other Examinations', to: '/faculty/examinations', icon: FileText },
   { label: 'Students', to: '/faculty/students', icon: Users },
   { label: 'Profile', to: '/profile', icon: User },
 ];
@@ -15,6 +16,7 @@ const studentItems = [
   { label: 'My GATE Scores', to: '/student/gate', icon: BookOpenCheck },
   { label: 'NPTEL Submission', to: '/student/nptel-submission', icon: FileText },
   { label: 'NPTEL Status', to: '/student/nptel-status', icon: User },
+  { label: 'Other Examinations', to: '/student/examinations', icon: FileText },
   { label: 'Profile', to: '/profile', icon: User },
 ];
 

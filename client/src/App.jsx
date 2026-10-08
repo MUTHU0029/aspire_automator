@@ -7,11 +7,13 @@ import Layout from './components/Layout';
 import FacultyDashboard from './pages/faculty/FacultyDashboard';
 import GateEntryPage from './pages/faculty/GateEntryPage';
 import NptelApprovalPage from './pages/faculty/NptelApprovalPage';
+import ExaminationRecordsPage from './pages/faculty/ExaminationRecordsPage';
 import StudentsPage from './pages/faculty/StudentsPage';
 import StudentDashboard from './pages/student/StudentDashboard';
 import MyGateScoresPage from './pages/student/MyGateScoresPage';
 import NptelSubmissionPage from './pages/student/NptelSubmissionPage';
 import NptelStatusPage from './pages/student/NptelStatusPage';
+import OtherExaminationsPage from './pages/student/OtherExaminationsPage';
 import ProfilePage from './pages/ProfilePage';
 import { AuthProvider } from './context/AuthContext';
 
@@ -30,6 +32,7 @@ const App = () => (
               <Route path="/faculty/dashboard" element={<FacultyDashboard />} />
               <Route path="/faculty/gate" element={<GateEntryPage />} />
               <Route path="/faculty/nptel-approval" element={<NptelApprovalPage />} />
+              <Route path="/faculty/examinations" element={<ExaminationRecordsPage />} />
               <Route path="/faculty/students" element={<StudentsPage />} />
             </Route>
 
@@ -38,6 +41,7 @@ const App = () => (
               <Route path="/student/gate" element={<MyGateScoresPage />} />
               <Route path="/student/nptel-submission" element={<NptelSubmissionPage />} />
               <Route path="/student/nptel-status" element={<NptelStatusPage />} />
+              <Route path="/student/examinations" element={<OtherExaminationsPage />} />
             </Route>
 
             <Route path="/" element={<Navigate to="/login" replace />} />

@@ -79,6 +79,54 @@ const getSectionGateEntry = async (req, res) => {
   }
 };
 
+const getGateExportData = async (_req, res) => {
+  try {
+    const students = await User.find({ role: 'student' })
+      .select('name registerNumber department year')
+      .sort({ name: 1 })
+      .lean();
+    const studentIds = students.map((student) => student._id);
+    const gateScores = await GateScore.find({ student: { $in: studentIds } })
+      .select('student test1 test2 test3 test4')
+      .lean();
+    const scoresByStudent = new Map(
+      gateScores.map((score) => [score.student.toString(), score])
+    );
+    const testFields = ['test1', 'test2', 'test3', 'test4'];
+
+    const studentRows = students.map((student) => {
+      const score = scoresByStudent.get(student._id.toString());
+      return {
+        name: student.name,
+        registerNumber: student.registerNumber || '',
+        department: student.department || '',
+        year: student.year || '',
+        test1: score ? score.test1 : null,
+        test2: score ? score.test2 : null,
+        test3: score ? score.test3 : null,
+        test4: score ? score.test4 : null,
+      };
+    });
+
+    const summary = testFields.map((field, index) => {
+      const scores = gateScores.map((score) => score[field]).filter(Number.isFinite);
+      const total = scores.reduce((sum, score) => sum + score, 0);
+      return {
+        test: `Test ${index + 1}`,
+        highest: scores.length ? scores.reduce((highest, score) => Math.max(highest, score)) : null,
+        minimum: scores.length ? scores.reduce((minimum, score) => Math.min(minimum, score)) : null,
+        average: scores.length
+          ? Number((total / scores.length).toFixed(2))
+          : null,
+      };
+    });
+
+    res.json({ students: studentRows, summary });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to prepare GATE score export', error: error.message });
+  }
+};
+
 const saveGateMarks = async (req, res) => {
   try {
     const { records } = req.body;
@@ -222,6 +270,7 @@ module.exports = {
   getDashboardSummary,
   getStudents,
   getSectionGateEntry,
+  getGateExportData,
   saveGateMarks,
   getNptelSubmissions,
   reviewNptelSubmission,

@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { Download } from 'lucide-react';
 import api from '../../api/axios';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import SelectInput from '../../components/SelectInput';
+import { createGateScoreWorkbook } from '../../utils/gateScoreExport';
 
 const departmentOptions = ['ECE', 'CSE', 'EEE', 'MECH'].map((value) => ({ value, label: value }));
 const yearOptions = ['II', 'III', 'IV'].map((value) => ({ value, label: value }));
@@ -15,6 +17,7 @@ const GateEntryPage = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const canLoad = useMemo(() => department && year && section, [department, year, section]);
 
@@ -83,6 +86,27 @@ const GateEntryPage = () => {
       toast.error(error.response?.data?.message || 'Failed to save marks');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const exportGateScores = async () => {
+    setExporting(true);
+    try {
+      const { data } = await api.get('/faculty/gate/export');
+      const file = createGateScoreWorkbook(data.students, data.summary);
+      const downloadUrl = URL.createObjectURL(new Blob([file], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      }));
+      const downloadLink = document.createElement('a');
+      downloadLink.href = downloadUrl;
+      downloadLink.download = 'gate-student-scores.xlsx';
+      downloadLink.click();
+      setTimeout(() => URL.revokeObjectURL(downloadUrl), 0);
+      toast.success('GATE scores exported successfully');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to export GATE scores');
+    } finally {
+      setExporting(false);
     }
   };
 
@@ -163,7 +187,11 @@ const GateEntryPage = () => {
         <SelectInput label="Section" name="section" value={section} onChange={(event) => setSection(event.target.value)} options={sectionOptions} placeholder="Select Section" />
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '18px' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginBottom: '18px' }}>
+        <button className="btn btn-secondary" onClick={exportGateScores} disabled={exporting}>
+          <Download size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
+          {exporting ? 'Exporting...' : 'Export GATE Scores'}
+        </button>
         <button className="btn btn-primary" onClick={saveMarks} disabled={saving || !students.length}>
           {saving ? 'Saving...' : 'Save Marks'}
         </button>
