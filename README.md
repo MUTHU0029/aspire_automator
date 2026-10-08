@@ -41,3 +41,9 @@ The app is configured to run on:
 
 - The backend reads environment variables from server/.env.
 - If no Mongo URI is configured, the server falls back to an in-memory MongoDB instance for local development.
+
+- PORT=5001
+MONGO_URI=mongodb+srv://muthuofficial29_db_user:nCkwDSL5QeU7I2UD@cluster1.llgc4ly.mongodb.net/?appName=Cluster1
+JWT_SECRET=b75ec2e5d5dce0d0de003576b7f08beb32c9ab4e279a650e083d4516f0c77e8a9e055c73d5d8ac73cc597811fccd27b298d3891ac663546c93c4fabeccae2220
+CLIENT_URL=http://localhost:5175
+
